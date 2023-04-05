@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+//@Service
 public class QueueService {
 
     AmazonSQS sqs;
@@ -23,7 +23,7 @@ public class QueueService {
         // Set up the client
         this.sqs = AmazonSQSClientBuilder.standard()
 //                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withRegion(Regions.US_EAST_2)
+                .withRegion(Regions.US_EAST_1)
                 .build();
 
         // Create a standard queue

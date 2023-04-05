@@ -8,19 +8,21 @@ import scp.project.orderservice.service.QueueService;
 @RestController
 public class HelloController {
 
-    @Autowired
-    QueueService queueService;
+//    @Autowired
+//    QueueService queueService;
 
 
     @GetMapping("/hello")
     String getHello(){
         return "Hello World";
     }
+//
+//    @GetMapping("/sendMessage")
+//    void getSendMessage(){
+//        queueService.sendMessage();
+//    }
 
-    @GetMapping("/sendMessage")
-    void getSendMessage(){
-        queueService.sendMessage();
-    }
+
 
 
 }

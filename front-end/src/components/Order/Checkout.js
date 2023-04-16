@@ -10,6 +10,9 @@ const Checkout = (props) => {
     name: true,
     street: true,
     city: true,
+    card: true,
+    endDate: true,
+    cvv: true,
     postalCode: true,
   });
 
@@ -17,6 +20,9 @@ const Checkout = (props) => {
   const streetInputRef = useRef();
   const postalCodeInputRef = useRef();
   const cityInputRef = useRef();
+  const cardInputRef = useRef();
+  const endDateInputRef = useRef();
+  const cvvInputRef = useRef();
 
   const confirmHandler = (event) => {
     event.preventDefault();
@@ -25,16 +31,25 @@ const Checkout = (props) => {
     const enteredStreet = streetInputRef.current.value;
     const enteredPostalCode = postalCodeInputRef.current.value;
     const enteredCity = cityInputRef.current.value;
+    const enteredCard = cardInputRef.current.value;
+    const enteredEndDate = endDateInputRef.current.value;
+    const enteredCvv = cvvInputRef.current.value;
 
     const enteredNameIsValid = !isEmpty(enteredName);
     const enteredStreetIsValid = !isEmpty(enteredStreet);
     const enteredCityIsValid = !isEmpty(enteredCity);
     const enteredPostalCodeIsValid = isFiveChars(enteredPostalCode);
+    const enteredCardIsValid = !isEmpty(enteredCard);
+    const enteredEndDateIsValid = !isEmpty(enteredEndDate);
+    const enteredCvvIsValid = !isEmpty(enteredCvv);
 
     setFormInputsValidity({
       name: enteredNameIsValid,
       street: enteredStreetIsValid,
       city: enteredCityIsValid,
+      card: enteredCardIsValid,
+      endDate: enteredEndDateIsValid,
+      cvv: enteredCvvIsValid,
       postalCode: enteredPostalCodeIsValid,
     });
 
@@ -42,6 +57,9 @@ const Checkout = (props) => {
       enteredNameIsValid &&
       enteredStreetIsValid &&
       enteredCityIsValid &&
+      enteredCardIsValid &&
+      enteredEndDateIsValid &&
+      enteredCvvIsValid &&
       enteredPostalCodeIsValid;
 
     if (!formIsValid) {
@@ -52,6 +70,9 @@ const Checkout = (props) => {
       name: enteredName,
       street: enteredStreet,
       city: enteredCity,
+      card: enteredCard,
+      endDate: enteredEndDate,
+      cvv: enteredCvv,
       postalCode: enteredPostalCode,
     });
   };
@@ -64,6 +85,15 @@ const Checkout = (props) => {
   }`;
   const postalCodeControlClasses = `${classes.control} ${
     formInputsValidity.postalCode ? '' : classes.invalid
+  }`;
+  const cardControlClasses = `${classes.control} ${
+    formInputsValidity.card ? '' : classes.invalid
+  }`;
+  const endDateControlClasses = `${classes.control} ${
+    formInputsValidity.endDate ? '' : classes.invalid
+  }`;
+  const cvvControlClasses = `${classes.control} ${
+    formInputsValidity.cvv ? '' : classes.invalid
   }`;
   const cityControlClasses = `${classes.control} ${
     formInputsValidity.city ? '' : classes.invalid
@@ -92,6 +122,21 @@ const Checkout = (props) => {
         <label htmlFor='city'>City</label>
         <input type='text' id='city' ref={cityInputRef} />
         {!formInputsValidity.city && <p>Please enter a valid city!</p>}
+      </div>
+      <div className={cardControlClasses}>
+        <label htmlFor='card'>Card Number</label>
+        <input type='text' id='card' ref={cardInputRef} />
+        {!formInputsValidity.card && <p>Please enter a valid card number!</p>}
+      </div>
+      <div className={endDateControlClasses}>
+        <label htmlFor='endDate'>End Date</label>
+        <input type='text' id='endDate' ref={cityInputRef} />
+        {!formInputsValidity.endDate && <p>Please enter a valid end date!</p>}
+      </div>
+      <div className={cvvControlClasses}>
+        <label htmlFor='cvv'>CVV</label>
+        <input type='text' id='cvv' ref={cityInputRef} />
+        {!formInputsValidity.cvv && <p>Please enter a valid CVV!</p>}
       </div>
       <div className={classes.actions}>
         <button type='button' onClick={props.onCancel}>

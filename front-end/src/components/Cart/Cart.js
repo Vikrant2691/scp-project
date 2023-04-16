@@ -5,12 +5,13 @@ import CartItem from "./CartItem";
 import classes from "./Cart.module.css";
 import CartContext from "../../store/cart-context";
 import Checkout from "./Checkout";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const Cart = (props) => {
   const [isCheckout, setIsCheckout] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [didSubmit, setDidSubmit] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(false);
   const cartCtx = useContext(CartContext);
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
@@ -28,34 +29,51 @@ const Cart = (props) => {
     setIsCheckout(true);
   };
 
+  const paymentStatusHandler = (value) => {
+    setPaymentStatus(value);
+  };
+
   const submitOrderHandler = async (userData) => {
     const id = uuidv4();
     console.log({
       Items: {
-        id:id,
+        id: id,
         user: userData,
         orderedItems: cartCtx.items,
       },
     });
 
-    
+    const dateInt = parseInt(Date.now());
 
     setIsSubmitting(true);
-    await fetch("https://d6hv1f8eaf.execute-api.us-east-1.amazonaws.com/scp-project/order", {
-      headers: { "content-type": "application/json" },
-      method: "POST",
-      body: JSON.stringify({
-        Item: {
-          id:id,
-          user: userData,
-          orderedItems: cartCtx.items,
-          orderStatus : "Submitted"
-        },
-      }),
-    });
-    setIsSubmitting(false);
-    setDidSubmit(true);
-    cartCtx.clearCart();
+
+    const response = await fetch(
+      "https://d6hv1f8eaf.execute-api.us-east-1.amazonaws.com/scp-project/order",
+      {
+        headers: { "content-type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          Item: {
+            id: id,
+            date: dateInt,
+            user: userData,
+            orderedItems: cartCtx.items,
+            orderStatus: "Submitted",
+          },
+        }),
+      }
+    );
+
+    console.log(response.body);
+    if (response.status === 200) {
+      setIsSubmitting(false);
+      setDidSubmit(true);
+      paymentStatusHandler(false);
+      cartCtx.clearCart();
+    } else {
+      setIsSubmitting(false);
+      paymentStatusHandler(true);
+    }
   };
 
   const cartItems = (
@@ -101,6 +119,7 @@ const Cart = (props) => {
   );
 
   const isSubmittingModalContent = <p>Sending order data...</p>;
+  const paymentDeclinedModalContent = <p>Payment Declined. Please try again</p>;
 
   const didSubmitModalContent = (
     <React.Fragment>
@@ -118,6 +137,7 @@ const Cart = (props) => {
       {!isSubmitting && !didSubmit && cartModalContent}
       {isSubmitting && isSubmittingModalContent}
       {!isSubmitting && didSubmit && didSubmitModalContent}
+      {paymentStatus && paymentDeclinedModalContent}
     </Modal>
   );
 };

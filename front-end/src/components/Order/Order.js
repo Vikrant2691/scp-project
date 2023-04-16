@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Modal from "../UI/Modal";
 import OrderItem from "./OrderItem";
 import classes from "./Cart.module.css";
-import CartContext from "../../store/cart-context";
 
 const Order = (props) => {
 
@@ -24,16 +23,15 @@ const Order = (props) => {
         }
       );
 
-      console.log(response);
 
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
 
       const responseData = await response.json();
-
-      const orders = responseData.body.Items[0].orderedItems;
-      setOrderStatus(responseData.body.Items[0].orderStatus);
+      console.log(responseData)
+      const orders = responseData.body[0].orderedItems;
+      setOrderStatus(responseData.body[0].orderStatus);
 
       console.log(orders);
 
@@ -50,7 +48,7 @@ const Order = (props) => {
         orderTotal = orderTotal + order.price * order.amount;
       }
       setLoadedMeals(meals);
-      setTotalAmount(orderTotal);
+      setTotalAmount(orderTotal.toFixed(2));
     };
     retrieveOrderHandler();
   }, [setLoadedMeals, setTotalAmount]);
@@ -72,7 +70,7 @@ const Order = (props) => {
   const cartModalContent = (
     <React.Fragment>
       {cartItems}
-      <div className={classes.total}>
+      <div className={classes.total}> 
         <span>Total Amount</span>
         <span>{"$ "+totalAmount}</span>
         <span>{orderStatus}</span>
